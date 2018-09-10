@@ -1,0 +1,27 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-frontend
+spec:
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: web-frontend
+    spec:
+      containers:
+        - image: frodood/node-app:v1
+          imagePullPolicy: Always
+          name: web-frontend
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REMOTE_URL
+              value: "mongodb://nodetodo:testuser@IP/test"

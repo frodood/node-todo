@@ -7,11 +7,11 @@ var database = require('./config/database'); 			// load the database config
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-
+const remoteUrl = process.env.REMOTE_URL
 // configuration ===============================================================
 console.log("start");
 console.log(database.remoteUrl);
-mongoose.connect(database.remoteUrl); 	// Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+mongoose.connect(remoteUrl); 	// Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 
 app.use(express.static('./public')); 		// set the static files location /public/img will be /img for users
 app.use(morgan('dev')); // log every request to the console

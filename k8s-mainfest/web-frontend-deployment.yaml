@@ -17,7 +17,7 @@ spec:
         app: web-frontend
     spec:
       containers:
-        - image: frodood/node-app:v1
+        - image: frodood/node-app:v2.1
           imagePullPolicy: Always
           name: web-frontend
           ports:

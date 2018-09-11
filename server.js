@@ -10,7 +10,7 @@ var methodOverride = require('method-override');
 const remoteUrl = process.env.REMOTE_URL
 // configuration ===============================================================
 console.log("start");
-console.log(database.remoteUrl);
+console.log(remoteUrl);
 mongoose.connect(remoteUrl); 	// Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 
 app.use(express.static('./public')); 		// set the static files location /public/img will be /img for users

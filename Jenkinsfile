@@ -7,8 +7,8 @@ stage('Preparation') {
 stage('Integration') {
 
       withKubeConfig([credentialsId: 'jenkins-deployer-credentials', serverUrl: 'https://E390067DC6C0C2E5169857FB6519932C.yl4.us-east-1.eks.amazonaws.com']) {
-
-         sh 'kubectl apply -f node-todo/k8s-mainfest/ --namespace=myapp-integration'
+          sh 'pwd && ls'
+          sh 'kubectl apply -f node-todo/k8s-mainfest --namespace=myapp-integration'
          try{
           //Gathering Node.js app's external IP address
           def ip = ''
@@ -50,7 +50,7 @@ stage('Integration') {
       withKubeConfig([credentialsId: 'jenkins-deployer-credentials', serverUrl: 'https://E390067DC6C0C2E5169857FB6519932C.yl4.us-east-1.eks.amazonaws.com']) {
 
 
-      sh 'kubectl apply -f deploy/ --namespace=myapp-production'
+      sh 'kubectl apply -f node-todo/k8s-mainfest --namespace=myapp-production'
 
 
       //Gathering Node.js app's external IP address

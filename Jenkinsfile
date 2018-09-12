@@ -17,7 +17,7 @@ stage('Integration') {
           println("Waiting for IP address")
           while(ip=='' && count<countLimit) {
            sleep 30
-           ip = sh script: 'kubectl get svc --namespace=myapp-integration -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
+           ip = sh script: 'kubectl --kubeconfig /tmp/kubeconfig get svc --namespace=myapp-integration -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
            ip=ip.trim()
            count++
           }
@@ -31,7 +31,7 @@ stage('Integration') {
 
      //Cleaning the integration environment
      println("Cleaning integration environment...")
-     sh 'kubectl delete -f deploy --namespace=myapp-integration'
+     sh 'kubectl --kubeconfig /tmp/kubeconfig delete -f deploy --namespace=myapp-integration'
          println("Integration stage finished.")
     }
 
@@ -45,10 +45,8 @@ stage('Integration') {
 
    }
  stage('Production') {
-      withKubeConfig([credentialsId: 'jenkins-deployer-credentials', serverUrl: 'https://E390067DC6C0C2E5169857FB6519932C.yl4.us-east-1.eks.amazonaws.com']) {
-
-
-      sh 'kubectl apply -f k8s-mainfest/ --namespace=myapp-production'
+    
+      sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f k8s-mainfest/ --namespace=myapp-production'
 
 
       //Gathering Node.js app's external IP address
@@ -60,7 +58,7 @@ stage('Integration') {
          println("Waiting for IP address")
          while(ip=='' && count<countLimit) {
           sleep 30
-          ip = sh script: 'kubectl get svc --namespace=myapp-production -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
+          ip = sh script: 'kubectl --kubeconfig /tmp/kubeconfig get svc --namespace=myapp-production -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
           ip = ip.trim()
           count++
      }
@@ -73,6 +71,6 @@ stage('Integration') {
                //Executing tests
     sh "chmod +x tests/production_test.sh && ./tests/production_test.sh ${ip}"
           }
-      }
+
    }
 }

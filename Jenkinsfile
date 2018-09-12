@@ -1,8 +1,6 @@
 node {
 stage('Preparation') {
-      //Installing kubectl in Jenkins agent
-      sh 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'
-  sh 'chmod +x ./kubectl && mv kubectl /usr/local/sbin'
+
 //Clone git repository
   git url:'https://github.com/frodood/node-todo.git'
    }
@@ -10,7 +8,7 @@ stage('Integration') {
 
       withKubeConfig([credentialsId: 'jenkins-deployer-credentials', serverUrl: 'https://E390067DC6C0C2E5169857FB6519932C.yl4.us-east-1.eks.amazonaws.com']) {
 
-         sh 'kubectl apply -f node-todo/k8s-mainfest/ --namespace=myapp-integration'
+         sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f node-todo/k8s-mainfest/ --namespace=myapp-integration'
          try{
           //Gathering Node.js app's external IP address
           def ip = ''
@@ -21,7 +19,7 @@ stage('Integration') {
           println("Waiting for IP address")
           while(ip=='' && count<countLimit) {
            sleep 30
-           ip = sh script: 'kubectl get svc --namespace=myapp-integration -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
+           ip = sh script: 'kubectl --kubeconfig /tmp/kubeconfig get svc --namespace=myapp-integration -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
            ip=ip.trim()
            count++
           }
@@ -35,7 +33,7 @@ stage('Integration') {
 
      //Cleaning the integration environment
      println("Cleaning integration environment...")
-     sh 'kubectl delete -f deploy --namespace=myapp-integration'
+     sh 'kubectl --kubeconfig /tmp/kubeconfig delete -f deploy --namespace=myapp-integration'
          println("Integration stage finished.")
     }
 
@@ -43,7 +41,7 @@ stage('Integration') {
     catch(Exception e) {
      println("Integration stage failed.")
       println("Cleaning integration environment...")
-      sh 'kubectl delete -f deploy --namespace=myapp-integration'
+      sh 'kubectl --kubeconfig /tmp/kubeconfig delete -f deploy --namespace=myapp-integration'
           error("Exiting...")
          }
 }
@@ -52,7 +50,7 @@ stage('Integration') {
       withKubeConfig([credentialsId: 'jenkins-deployer-credentials', serverUrl: 'https://E390067DC6C0C2E5169857FB6519932C.yl4.us-east-1.eks.amazonaws.com']) {
 
 
-      sh 'kubectl apply -f deploy/ --namespace=myapp-production'
+      sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f deploy/ --namespace=myapp-production'
 
 
       //Gathering Node.js app's external IP address
@@ -64,7 +62,7 @@ stage('Integration') {
          println("Waiting for IP address")
          while(ip=='' && count<countLimit) {
           sleep 30
-          ip = sh script: 'kubectl get svc --namespace=myapp-production -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
+          ip = sh script: 'kubectl --kubeconfig /tmp/kubeconfig get svc --namespace=myapp-production -o jsonpath="{.items[?(@.metadata.name==\'web-frontend-lb\')].status.loadBalancer.ingress[*].ip}"', returnStdout: true
           ip = ip.trim()
           count++
      }

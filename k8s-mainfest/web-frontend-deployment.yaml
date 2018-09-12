@@ -24,4 +24,4 @@ spec:
             - containerPort: 8080
           env:
             - name: REMOTE_URL
-              value: "mongodb://testuser6:test@IP/nodetodo"
+              value: "mongodb://testuser:test@IP/nodetodo"

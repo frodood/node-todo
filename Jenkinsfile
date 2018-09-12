@@ -17,7 +17,7 @@ stage('Integration') {
           println("Waiting for IP address")
           while(ip=='' && count<countLimit) {
            sleep 30
-           ip = sh script: 'kubectl --kubeconfig /tmp/kubeconfig get svc -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'', returnStdout: true
+           ip = sh script: "kubectl --kubeconfig /tmp/kubeconfig get svc -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'", returnStdout: true
            ip=ip.trim()
            count++
           }
@@ -58,7 +58,7 @@ stage('Integration') {
          println("Waiting for IP address")
          while(ip=='' && count<countLimit) {
           sleep 30
-          ip = sh script: 'kubectl --kubeconfig /tmp/kubeconfig get svc -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'', returnStdout: true
+          ip = sh script: "kubectl --kubeconfig /tmp/kubeconfig get svc -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'", returnStdout: true
           ip = ip.trim()
           count++
      }

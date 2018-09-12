@@ -7,7 +7,8 @@ stage('Preparation') {
 stage('Integration') {
 
       withKubeConfig([credentialsId: 'jenkins-deployer-credentials', serverUrl: 'https://E390067DC6C0C2E5169857FB6519932C.yl4.us-east-1.eks.amazonaws.com']) {
-
+      sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f /tmp/aws-auth-cm.yaml'
+        sh 'kubectl create cm nodejs-app --from-file=src/ --namespace=myapp-integration -o=yaml --dry-run > k8s-mainfest//cm.yaml'
           sh 'kubectl apply -f k8s-mainfest/ --namespace=default'
          try{
           //Gathering Node.js app's external IP address

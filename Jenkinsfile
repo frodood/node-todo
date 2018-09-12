@@ -31,7 +31,7 @@ stage('Integration') {
 
      //Cleaning the integration environment
      println("Cleaning integration environment...")
-     sh 'kubectl --kubeconfig /tmp/kubeconfig delete -f deploy --namespace=myapp-integration'
+     sh 'kubectl --kubeconfig /tmp/kubeconfig delete -f k8s-mainfest'
          println("Integration stage finished.")
     }
 
@@ -39,14 +39,14 @@ stage('Integration') {
     catch(Exception e) {
      println("Integration stage failed.")
       println("Cleaning integration environment...")
-      sh 'kubectl delete -f deploy --namespace=myapp-integration'
+      sh 'kubectl delete -f k8s-mainfest'
           error("Exiting...")
          }
 
    }
  stage('Production') {
 
-      sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f k8s-mainfest/ --namespace=myapp-production'
+      sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f k8s-mainfest/'
 
 
       //Gathering Node.js app's external IP address

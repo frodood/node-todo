@@ -1,0 +1,46 @@
+---
+- name: install wget
+  apt:
+    name: wget
+    state: present
+
+- name: Install common Ops packages
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=600
+  with_items:
+    - python-pip
+    - sharutils
+    - apt-transport-https
+    - ca-certificates
+    - openjdk-8-jre
+    - openjdk-8-jdk
+    - openjdk-8-jdk-headless
+
+
+- name: Add Jenkins-CI Repository Key
+  apt_key: url=http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key state=present
+
+- name: Add Jenkins-CI Repository
+  apt_repository:
+    repo='deb http://pkg.jenkins-ci.org/debian binary/'
+    state=present
+    update_cache=yes
+
+- name: Install Jenkins-CI
+  apt: name=jenkins state=present update_cache=yes cache_valid_time=600
+  notify:
+    - Restart Jenkins
+  register: install_jenkins
+
+
+- name: sleep for 30 seconds and continue with play
+  wait_for: timeout=30
+  delegate_to: localhost
+
+- name: init password jenkin
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  changed_when: false
+  register: result
+
+- name: print init password jenkins
+  debug:
+    var: result.stdout

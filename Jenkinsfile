@@ -5,7 +5,8 @@ stage('Preparation') {
   git url:'https://github.com/frodood/node-todo.git'
    }
 stage('Integration') {
-
+        sh 'INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)'
+        sh 'sed -i s,IP,${INTERNAL_IP},g k8s-mainfest/web-frontend-deployment.yaml' 
          sh 'kubectl --kubeconfig /tmp/kubeconfig apply -f k8s-mainfest/'
          try{
           //Gathering Node.js app's external IP address

@@ -41,7 +41,7 @@ stage('Integration') {
     catch(Exception e) {
      println("Integration stage failed.")
       println("Cleaning integration environment...")
-      sh 'kubectl delete -f k8s-mainfest'
+      sh 'kubectl --kubeconfig /tmp/kubeconfig delete -f k8s-mainfest'
           error("Exiting...")
          }
 

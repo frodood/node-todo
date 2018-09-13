@@ -28,6 +28,7 @@ stage('Integration') {
         }
     else{
                 //Executing tests
+                sleep 30
      sh "chmod +x tests/integration_test.sh && ./tests/integration_test.sh ${ip}"
 
      //Cleaning the integration environment
@@ -70,6 +71,7 @@ stage('Integration') {
    }
    else{
                //Executing tests
+               sleep 30
     sh "chmod +x tests/production_test.sh && ./tests/production_test.sh ${ip}"
           }
 

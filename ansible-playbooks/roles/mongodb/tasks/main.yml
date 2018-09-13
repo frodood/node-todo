@@ -1,4 +1,9 @@
 ---
+- name: python_modules | Installing Python Modules
+  pip:
+    name: "pymongo"
+    state: "present"
+
 - name: Adding MongoDB Repo Key
   apt_key:
     keyserver: "keyserver.ubuntu.com"

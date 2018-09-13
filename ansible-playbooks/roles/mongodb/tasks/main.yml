@@ -37,4 +37,4 @@
   become: yes
   become_user: root
   shell: |
-    mongo nodetodo --eval "db.createUser({ user: 'testuser', pwd: 'test', roles: [ { role: 'dbOwner', db: 'nodetodo' } ] });
+    mongo nodetodo --eval "db.createUser({ user: 'testuser', pwd: 'test', roles: [ { role: 'dbOwner', db: 'nodetodo' } ] });"

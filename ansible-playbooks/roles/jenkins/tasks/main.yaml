@@ -45,5 +45,6 @@
   debug:
     var: result.stdout
 
-- name: Restart jenkins
-  notify: Restart Jenkins
+- name: Jenking Restart
+  notify:
+    - Restart Jenkins

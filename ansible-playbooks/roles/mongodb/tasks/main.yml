@@ -34,8 +34,7 @@
   notify: "Restart MongoDB"
 
 - name: creating mongod users
-  mongodb_user:
-    database: nodetodo
-    name: testuser
-    password: 12345
-    state: present
+  become: yes
+  become_user: root
+  shell: |
+    mongo nodetodo --eval "db.createUser({ user: 'testuser', pwd: 'test', roles: [ { role: 'dbOwner', db: 'nodetodo' } ] });

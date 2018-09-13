@@ -44,7 +44,4 @@
 - name: print init password jenkins
   debug:
     var: result.stdout
-
-- name: Jenking Restart
-  notify:
-    - Restart Jenkins
+  notify: "Restart Jenkins"

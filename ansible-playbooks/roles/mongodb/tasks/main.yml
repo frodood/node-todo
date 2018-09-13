@@ -33,6 +33,10 @@
   register: "mongodb_configured"
   notify: "Restart MongoDB"
 
+- name: sleep for 30 seconds and continue with play
+  wait_for: timeout=30
+  delegate_to: localhost
+  
 - name: creating mongod users
   become: yes
   become_user: root
